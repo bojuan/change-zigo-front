@@ -12,3 +12,11 @@ export type Appointment = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type AppointmentForm = {
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+};

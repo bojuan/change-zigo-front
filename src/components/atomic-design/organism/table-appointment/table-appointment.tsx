@@ -32,7 +32,6 @@ export const TableAppointment: FunctionComponent<{
           placeholder="Buscar por Id"
           value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
           onChange={(event) => {
-            console.log(table.getColumn("id")?.columns);
             return table.getColumn("id")?.setFilterValue(event.target.value);
           }}
           className="max-w-sm"

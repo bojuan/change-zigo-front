@@ -1,6 +1,7 @@
 import Layout from "@/app/layout";
 import { TableAppointment } from "@/components/atomic-design/organism/table-appointment/table-appointment";
 import { Appointment } from "@/interfaces/appointment";
+import { useRouter } from "next/router";
 
 const data: Appointment[] = [
   {
@@ -42,13 +43,15 @@ const data: Appointment[] = [
 ];
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <Layout>
       <TableAppointment
         data={data}
-        onEdit={(id) => console.log("Edit", id)}
+        onEdit={(id) => router.push(`/edit/${id}`)}
         onRemove={(id) => console.log("Remove", id)}
-        onAdd={() => {}}
+        onAdd={() => router.push(`/create`)}
       />
     </Layout>
   );
