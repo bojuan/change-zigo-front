@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Layout from "@/app/layout";
 import FormClient from "@/components/atomic-design/organism/form-client/form-client";
 import FormAppointment from "@/components/atomic-design/organism/form-appointment/form-appointment";
 import { Button } from "@/components/ui/button";
@@ -67,7 +66,7 @@ export default function Edit() {
   };
 
   return (
-    <Layout>
+    <>
       <div className="mb-8">
         <h2 className="text-4xl mb-1 font-bold">Editar Cita</h2>
         <p>Id Cita: {router.query.id}</p>
@@ -115,6 +114,6 @@ export default function Edit() {
           </Button>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

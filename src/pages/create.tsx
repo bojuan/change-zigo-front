@@ -1,4 +1,3 @@
-import Layout from "@/app/layout";
 import Stepper from "@/components/atomic-design/molecules/stepper";
 import FormAppointment from "@/components/atomic-design/organism/form-appointment/form-appointment";
 
@@ -41,10 +40,10 @@ export default function Create() {
   };
 
   const onNextSubmit = () => {
-    console.log("Click Next")
-    if(currentStep === 2){
-      router.push(`/`)
-      return
+    console.log("Click Next");
+    if (currentStep === 2) {
+      router.push(`/`);
+      return;
     }
     if (isCurrentValid) {
       if (currentStep === 0) {
@@ -70,14 +69,15 @@ export default function Create() {
     <>
       {Object.keys(dataToRender).map((key) => (
         <div key={key}>
-          <span className="font-bold capitalize">{key}</span>: <span>{(dataToRender as any)[key]}</span>
+          <span className="font-bold capitalize">{key}</span>:{" "}
+          <span>{(dataToRender as any)[key]}</span>
         </div>
       ))}
     </>
   );
 
   return (
-    <Layout>
+    <>
       <h2 className="text-4xl mb-12 font-bold">Crear Cita</h2>
 
       <Stepper
@@ -110,6 +110,6 @@ export default function Create() {
           ) : null}
         </div>
       </Stepper>
-    </Layout>
+    </>
   );
 }

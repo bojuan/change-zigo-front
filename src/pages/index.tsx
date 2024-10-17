@@ -11,51 +11,24 @@ import {
 } from "@/components/ui/alert-dialog";
 import { TableAppointment } from "@/components/atomic-design/organism/table-appointment/table-appointment";
 import { Appointment } from "@/interfaces/appointment";
-import { useManagerUI } from "@/store/app-store";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
-
-const data: Appointment[] = [
-  {
-    id: "m5gr84i9",
-
-    status: "success",
-
-    title: "Cita inicial",
-    description: "Esta es uan cita inicial",
-    date: "2024-11-16",
-    time: "12:00",
-    location: "Quicentro Norte",
-    client: {
-      name: "Juan Esteban Rodriguez",
-      email: "juan_rod@gmail.com",
-      phone: "0999999999",
-    },
-    createdAt: "YYYY-MM-DDTHH:mm:ssZ",
-    updatedAt: "YYYY-MM-DDTHH:mm:ssZ",
-  },
-  {
-    id: "abc",
-
-    status: "success",
-
-    title: "Cita inicial",
-    description: "Esta es uan cita inicial",
-    date: "2024-11-16",
-    time: "12:00",
-    location: "Quicentro Norte",
-    client: {
-      name: "Juan Esteban Rodriguez",
-      email: "auan_rod@gmail.com",
-      phone: "0999999999",
-    },
-    createdAt: "YYYY-MM-DDTHH:mm:ssZ",
-    updatedAt: "YYYY-MM-DDTHH:mm:ssZ",
-  },
-];
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+  useQuery,
+} from "@tanstack/react-query";
+import { InferGetServerSidePropsType } from "next";
+import { getAppointments } from "@/services/appointment";
 
 export default function Home() {
+  const { data } = useQuery({
+    queryKey: ["get-appointments"],
+    queryFn: getAppointments,
+  });
+
   const router = useRouter();
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [appointmentToRemove, setAppointmentToRemove] = useState<string | null>(
@@ -64,7 +37,6 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handlerRemove = (id: string) => {
-    console.log("Remove", id);
     setOpenAlert(true);
     setAppointmentToRemove(id);
   };
@@ -84,11 +56,11 @@ export default function Home() {
   };
 
   return (
-    <Layout>
+    <>
       <h2 className="text-4xl mb-12 font-bold">Lista de Citas</h2>
 
       <TableAppointment
-        data={data}
+        data={data ?? []}
         onEdit={(id) => router.push(`/edit/${id}`)}
         onRemove={handlerRemove}
         onAdd={() => router.push(`/create`)}
@@ -99,7 +71,8 @@ export default function Home() {
           <AlertDialogHeader>
             <AlertDialogTitle>¿Desear eliminar esta cita?</AlertDialogTitle>
             <AlertDialogDescription>
-              Al eliminar esta cita ({appointmentToRemove}), no podrás verla en la lista.
+              Al eliminar esta cita ({appointmentToRemove}), no podrás verla en
+              la lista.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -115,6 +88,20 @@ export default function Home() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Layout>
+    </>
   );
+}
+
+export async function getServerSideProps() {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["get-appointments"],
+    queryFn: getAppointments,
+  });
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient), // Hydrate the query on the client
+    },
+  };
 }
