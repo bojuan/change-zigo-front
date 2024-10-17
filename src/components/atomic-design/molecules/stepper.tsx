@@ -1,6 +1,7 @@
 import { FC, useState, ReactNode } from "react";
 import clsx from "clsx";
 import { Button } from "@/components/ui/button";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 interface StepperProps {
   steps: string[];
@@ -9,6 +10,7 @@ interface StepperProps {
   isCurrentValid: boolean;
   onNext: () => void;
   onPrev: () => void;
+  loading?: boolean;
 }
 
 const Stepper: FC<StepperProps> = ({
@@ -16,10 +18,10 @@ const Stepper: FC<StepperProps> = ({
   children,
   isCurrentValid,
   currentStep,
+  loading,
   onNext,
   onPrev,
 }) => {
-
   const handleNext = () => {
     if (currentStep < steps.length) {
       onNext();
@@ -79,10 +81,10 @@ const Stepper: FC<StepperProps> = ({
         >
           Atrás
         </Button>
-        <Button
-          onClick={handleNext}
-          disabled={!isCurrentValid}
-        >
+        <Button onClick={handleNext} disabled={!isCurrentValid || loading}>
+          {loading ? (
+            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
           Siguiente
         </Button>
       </div>

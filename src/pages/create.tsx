@@ -2,68 +2,23 @@ import Stepper from "@/components/atomic-design/molecules/stepper";
 import FormAppointment from "@/components/atomic-design/organism/form-appointment/form-appointment";
 
 import FormClient from "@/components/atomic-design/organism/form-client/form-client";
+import { useCreate } from "@/hooks/pages/use-create";
 import { AppointmentForm } from "@/interfaces/appointment";
 import { Client } from "@/interfaces/client";
-import { useRouter } from "next/router";
-import { useRef, useState } from "react";
 
 const steps = ["Cliente", "Cita", "Resumen"];
 
 export default function Create() {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isCurrentValid, setIsCurrentValid] = useState<boolean>(false);
-  const valueForm = useRef<Client | AppointmentForm | null>(null);
-  const router = useRouter();
-
-  const [valueFormsToSend, setValueFormToSend] = useState<{
-    client: Client | null;
-    appointment: AppointmentForm | null;
-  }>({
-    client: null,
-    appointment: null,
-  });
-
-  const validateCurrentValid = (isValid: boolean) => {
-    setIsCurrentValid(isValid);
-  };
-
-  const getDataForm = (data: Client | AppointmentForm) => {
-    valueForm.current = data;
-  };
-
-  const onNext = () => {
-    setCurrentStep(currentStep + 1);
-  };
-
-  const onPrev = () => {
-    setCurrentStep(currentStep - 1);
-  };
-
-  const onNextSubmit = () => {
-    console.log("Click Next");
-    if (currentStep === 2) {
-      router.push(`/`);
-      return;
-    }
-    if (isCurrentValid) {
-      if (currentStep === 0) {
-        setValueFormToSend({
-          ...valueFormsToSend,
-          client: valueForm.current as Client,
-        });
-      }
-      if (currentStep === 1) {
-        setValueFormToSend({
-          ...valueFormsToSend,
-          appointment: valueForm.current as AppointmentForm,
-        });
-      }
-
-      onNext();
-      setIsCurrentValid(false);
-      valueForm.current = null;
-    }
-  };
+  const {
+    isCurrentValid,
+    currentStep,
+    valueFormsToSend,
+    loading,
+    getDataForm,
+    validateCurrentValid,
+    onNextSubmit,
+    onPrev,
+  } = useCreate();
 
   const renderOverview = (dataToRender: Client | AppointmentForm) => (
     <>
@@ -86,6 +41,7 @@ export default function Create() {
         currentStep={currentStep}
         onNext={onNextSubmit}
         onPrev={onPrev}
+        loading={loading}
       >
         <div className="m-auto">
           {currentStep === 0 ? (
