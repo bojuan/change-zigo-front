@@ -71,3 +71,11 @@ export const createAppointment = async (dataToCreate: Partial<Appointment>): Pro
     }, 4000);
   });
 }
+
+export const updateAppointment = async (dataToUpdate: Partial<Appointment>): Promise<Appointment> => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(dataItem)
+    }, 4000);
+  });
+}

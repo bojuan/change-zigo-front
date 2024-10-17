@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useEdit } from "@/hooks/pages/use-edit";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { getAppointmentById } from "@/services/appointment";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 export default function Edit() {
   const {
@@ -13,6 +14,7 @@ export default function Edit() {
     valuesAppointmentForm,
     isValidClientForm,
     isValidAppointmentForm,
+    loading,
     validateClientForm,
     validateAppointmentForm,
     getDataClientForm,
@@ -55,10 +57,13 @@ export default function Edit() {
         </Tabs>
         <div className="gap-4 flex flex-col items-center">
           <Button
-            disabled={!isValidClientForm || !isValidAppointmentForm}
+            disabled={!isValidClientForm || !isValidAppointmentForm || loading}
             className="w-[400px]"
             onClick={onSubmitEdit}
           >
+            {loading ? (
+              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+            ) : null}
             Editar
           </Button>
           <Button variant="secondary" className="w-[400px]" onClick={goBack}>

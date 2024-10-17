@@ -1,7 +1,7 @@
 import { Appointment, AppointmentForm } from "@/interfaces/appointment";
 import { Client } from "@/interfaces/client";
-import { getAppointmentById } from "@/services/appointment";
-import { useQuery } from "@tanstack/react-query";
+import { getAppointmentById, updateAppointment } from "@/services/appointment";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 
@@ -11,11 +11,14 @@ export function useEdit() {
     queryFn: getAppointmentById,
   });
 
+  const mutation = useMutation({
+    mutationFn: updateAppointment,
+  });
+
   const router = useRouter();
   const [isValidClientForm, setIsValidClientForm] = useState<boolean>(true);
   const [isValidAppointmentForm, setIsValidAppointmentForm] =
     useState<boolean>(true);
-
   const valuesClientForm = useRef<Client>(data!.client);
   const valuesAppointmentForm = useRef<AppointmentForm>({
     title: data!.title,
@@ -41,12 +44,15 @@ export function useEdit() {
     valuesAppointmentForm.current = data;
   };
 
-  const onSubmitEdit = () => {
+  const onSubmitEdit = async() => {
     const dataToSendEdit: Appointment = {
       ...data!,
       ...valuesAppointmentForm.current,
       client: { ...valuesClientForm.current },
     };
+
+    await mutation.mutateAsync(dataToSendEdit)
+    router.push(`/`);
   };
 
   return {
@@ -55,6 +61,7 @@ export function useEdit() {
     valuesAppointmentForm,
     isValidClientForm,
     isValidAppointmentForm,
+    loading: mutation.isPending,
     validateClientForm,
     validateAppointmentForm,
     getDataClientForm,
