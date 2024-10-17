@@ -1,7 +1,20 @@
 import Layout from "@/app/layout";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { TableAppointment } from "@/components/atomic-design/organism/table-appointment/table-appointment";
 import { Appointment } from "@/interfaces/appointment";
+import { useManagerUI } from "@/store/app-store";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 const data: Appointment[] = [
   {
@@ -44,6 +57,31 @@ const data: Appointment[] = [
 
 export default function Home() {
   const router = useRouter();
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+  const [appointmentToRemove, setAppointmentToRemove] = useState<string | null>(
+    null
+  );
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handlerRemove = (id: string) => {
+    console.log("Remove", id);
+    setOpenAlert(true);
+    setAppointmentToRemove(id);
+  };
+
+  const approveRemove = () => {
+    setLoading(true);
+    //remove appointmentToRemove
+    setLoading(false);
+    setOpenAlert(false);
+
+    setAppointmentToRemove(null);
+  };
+
+  const cancelRemove = () => {
+    setOpenAlert(false);
+    setAppointmentToRemove(null);
+  };
 
   return (
     <Layout>
@@ -52,9 +90,31 @@ export default function Home() {
       <TableAppointment
         data={data}
         onEdit={(id) => router.push(`/edit/${id}`)}
-        onRemove={(id) => console.log("Remove", id)}
+        onRemove={handlerRemove}
         onAdd={() => router.push(`/create`)}
       />
+
+      <AlertDialog open={openAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Desear eliminar esta cita?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Al eliminar esta cita ({appointmentToRemove}), no podrás verla en la lista.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelRemove}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={approveRemove} disabled={loading}>
+              {loading ? (
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              Continuar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Layout>
   );
 }

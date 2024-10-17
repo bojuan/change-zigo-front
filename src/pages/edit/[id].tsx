@@ -57,14 +57,14 @@ export default function Edit() {
   };
 
   const onSubmitEdit = () => {
-    const dataToSendEdit: Appointment ={
+    const dataToSendEdit: Appointment = {
       ...data,
       ...valuesAppointmentForm.current,
-      client: {...valuesClientForm.current}
-    }
+      client: { ...valuesClientForm.current },
+    };
 
-    console.log(dataToSendEdit)
-  }
+    console.log(dataToSendEdit);
+  };
 
   return (
     <Layout>
@@ -98,13 +98,22 @@ export default function Edit() {
             />
           </TabsContent>
         </Tabs>
-        <Button
-          disabled={!isValidClientForm || !isValidAppointmentForm}
-          className="w-[400px]"
-          onClick={onSubmitEdit}
-        >
-          Editar
-        </Button>
+        <div className="gap-4 flex flex-col items-center">
+          <Button
+            disabled={!isValidClientForm || !isValidAppointmentForm}
+            className="w-[400px]"
+            onClick={onSubmitEdit}
+          >
+            Editar
+          </Button>
+          <Button
+            variant="secondary"
+            className="w-[400px]"
+            onClick={() => router.back()}
+          >
+            Cancelar
+          </Button>
+        </div>
       </div>
     </Layout>
   );
