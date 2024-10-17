@@ -6,6 +6,7 @@ import { useEdit } from "@/hooks/pages/use-edit";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { getAppointmentById } from "@/services/appointment";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { GetServerSideProps } from "next";
 
 export default function Edit() {
   const {
@@ -75,12 +76,14 @@ export default function Edit() {
   );
 }
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.params!;
+
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["get-appointment"],
-    queryFn: getAppointmentById,
+    queryKey: ["get-appointment", id as string],
+    queryFn: () =>getAppointmentById(id as string),
   });
   return {
     props: {

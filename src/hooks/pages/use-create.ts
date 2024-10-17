@@ -4,6 +4,7 @@ import { createAppointment } from "@/services/appointment";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
+import { useToast } from "../use-toast";
 
 export function useCreate() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export function useCreate() {
     client: null,
     appointment: null,
   });
+  const { toast } = useToast();
 
   const mutation = useMutation({
     mutationFn: createAppointment,
@@ -40,11 +42,20 @@ export function useCreate() {
 
   const onNextSubmit = async () => {
     if (currentStep === 2) {
-       await mutation.mutateAsync(
-        valueFormsToSend as unknown as Partial<AppointmentForm>
-      );
+      try {
+        await mutation.mutateAsync({
+          client: valueFormsToSend.client!,
+          ...valueFormsToSend.appointment,
+        });
 
-      router.push(`/`);
+        router.push(`/`);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error al crear el item.",
+        });
+      }
+
       return;
     }
 
@@ -76,6 +87,6 @@ export function useCreate() {
     validateCurrentValid,
     onNextSubmit,
     onPrev,
-    loading: mutation.isPending
+    loading: mutation.isPending,
   };
 }

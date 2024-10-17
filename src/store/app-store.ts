@@ -1,19 +1,14 @@
+import { Appointment } from "@/interfaces/appointment";
 import { create } from "zustand";
 
 interface AppState {
-  ui: {
-    isOpenAlert: boolean;
-    openAlert: () => void;
-    closeAlert: () => void;
-  };
+  companyName: string;
+  data: Appointment[];
+  setData: (newData: Appointment[]) => void;
 }
 
-export const useManagerUI = create<AppState>((set) => ({
-  ui: {
-    isOpenAlert: false,
-    openAlert: () =>
-      set((state) => ({ ...state, ui: { ...state.ui, isOpenAlert: true } })),
-    closeAlert: () =>
-      set((state) => ({ ...state, ui: { ...state.ui, isOpenAlert: false } })),
-  },
+export const useAppStorage = create<AppState>((set) => ({
+  companyName: "My Company",
+  data: [],
+  setData: (newData) => set((state) => ({ data: newData })),
 }));

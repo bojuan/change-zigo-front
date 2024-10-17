@@ -6,16 +6,18 @@ import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 
 export function useEdit() {
+  const router = useRouter();
+
   const { data } = useQuery({
-    queryKey: ["get-appointment"],
-    queryFn: getAppointmentById,
+    queryKey: ["get-appointment", router.query.id],
+    queryFn: () => getAppointmentById(router.query.id as string),
   });
 
   const mutation = useMutation({
     mutationFn: updateAppointment,
   });
 
-  const router = useRouter();
+  
   const [isValidClientForm, setIsValidClientForm] = useState<boolean>(true);
   const [isValidAppointmentForm, setIsValidAppointmentForm] =
     useState<boolean>(true);

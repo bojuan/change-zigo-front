@@ -1,12 +1,18 @@
-import { getAppointments } from "@/services/appointment";
-import { useQuery } from "@tanstack/react-query";
+import { deleteAppointment, getAppointments } from "@/services/appointment";
+
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useToast } from "../use-toast";
 
 export function useHome() {
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["get-appointments"],
     queryFn: getAppointments,
+  });
+
+  const mutation = useMutation({
+    mutationFn: deleteAppointment,
   });
 
   const router = useRouter();
@@ -15,15 +21,26 @@ export function useHome() {
     null
   );
   const [loading, setLoading] = useState<boolean>(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (typeof data === "undefined") {
+      toast({
+        variant: "destructive",
+        title: "Error al traer los datos.",
+      });
+    }
+  }, []);
 
   const handlerRemove = (id: string) => {
     setOpenAlert(true);
     setAppointmentToRemove(id);
   };
 
-  const approveRemove = () => {
+  const approveRemove = async () => {
     setLoading(true);
-    //remove appointmentToRemove
+    await mutation.mutateAsync(appointmentToRemove!);
+    refetch();
     setLoading(false);
     setOpenAlert(false);
 
