@@ -47,6 +47,8 @@ export default function Home() {
 
   return (
     <Layout>
+      <h2 className="text-4xl mb-12 font-bold">Lista de Citas</h2>
+
       <TableAppointment
         data={data}
         onEdit={(id) => router.push(`/edit/${id}`)}

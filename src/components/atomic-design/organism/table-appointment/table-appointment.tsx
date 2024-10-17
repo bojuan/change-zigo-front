@@ -28,14 +28,7 @@ export const TableAppointment: FunctionComponent<{
   return (
     <div className="w-full">
       <div className="flex items-center justify-between	 py-4">
-        <Input
-          placeholder="Buscar por Id"
-          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => {
-            return table.getColumn("id")?.setFilterValue(event.target.value);
-          }}
-          className="max-w-sm"
-        />
+        <div></div>
         <div>
           <Button onClick={onAdd}>Agregar</Button>
         </div>
